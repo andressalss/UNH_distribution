@@ -1,0 +1,104 @@
+---
+title: "Distribuição Nadarajah-Haghighi Unitária (UNH)"
+author: "Andressa Lopez Soares"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introdução
+
+A distribuição Nadarajah-Haghighi Unitária (UNH) é uma distribuição contínua definida no intervalo unitário $(0,1)$, proposta como alternativa flexível para modelar proporções e dados limitados. A distribuição é obtida a partir da distribuição Nadarajah-Haghighi original, usando a transformação $Y = exp(-X)$, e é parametrizada por dois parâmetros:
+
+-   $\alpha > 0$: parâmetro de forma;\
+-   $\lambda > 0$: parâmetro de escala.
+
+# Funções da Distribuição
+
+Seja $Y \sim \text{UNH}(\alpha, \lambda)$. As principais funções associadas a essa distribuição são:
+
+## Função de densidade de probabilidade (PDF)
+
+A função de densidade de probabilidade (PDF) da distribuição UNH é dada por:
+
+$$
+f(y; \alpha, \lambda) = \frac{\alpha \lambda}{y} (1 - \lambda \ln y)^{\alpha - 1} \exp\left[1 - (1 - \lambda \ln y)^{\alpha} \right], \quad 0 < y < 1,
+$$
+
+## Função de distribuição acumulada (CDF)
+
+A função de distribuição acumulada (CDF) da distribuição UNH é dada por:
+
+$$
+F(y; \alpha, \lambda) = \exp\left[1 - (1 - \lambda \ln y)^{\alpha} \right], \quad 0 < y < 1,
+$$
+
+## Função quantílica
+
+A função quantílica da distribuição UNH é obtida a partir de $F(y) = u$, onde $u \sim \text{Uniforme}(0,1)$, ou seja, $u = \exp\left(1 - (1 - \lambda \log(y))^{\alpha} \right)$. A forma simplificada da função quantílica da UNH é dada por:
+
+$$
+y = \exp\left(\frac{1}{\lambda} \left(1 - (1 - \ln(u))^{\frac{1}{\alpha}} \right) \right)
+$$
+
+A função quantílica para um percentil $p$ é definida como:
+
+$$
+y_p = \exp\left(\frac{1}{\lambda} \left(1 - (1 - \ln(p))^{\frac{1}{\alpha}} \right) \right)
+$$
+
+# Geração de números aleatórios
+Para gerar uma variável aleatória \( Y \sim \text{UNH}(\alpha, \lambda) \), utilizamos o método da inversa da CDF:
+
+$$
+Y = Q_{\text{UNH}}(U) = \exp\left\{ \frac{1}{\lambda} \left[ 1 - (1 - \ln U)^{1/\alpha} \right] \right\}, \quad U \sim \text{Uniform}(0, 1)
+$$
+
+# Estimação via máxima verossimilhança
+
+Suponha que $y_1, y_2, \ldots, y_n$ seja uma amostra aleatória simples da distribuição NHU. Então, a função de verossimilhança é dada por:
+
+$$
+L(\lambda,\alpha;\mathbf{y})
+= \prod_{i=1}^n f(y_i;\alpha,\lambda)
+= \prod_{i=1}^n \frac{\alpha \lambda}{y_i}\,(1 - \lambda \ln y_i)^{\alpha - 1}\,\exp\bigl[\,1 - (1 - \lambda \ln y_i)^{\alpha}\bigr].
+$$
+
+A log‑verossimilhança correspondente é
+
+$$
+\ell(\lambda,\alpha;\mathbf{y})
+= \ln L(\lambda,\alpha;\mathbf{y})
+= n\ln(\alpha\lambda)
+- \sum_{i=1}^n \ln(y_i)
++ (\alpha - 1)\sum_{i=1}^n \ln\bigl(1 - \lambda \ln y_i\bigr)
++ n
+- \sum_{i=1}^n \bigl(1 - \lambda \ln y_i\bigr)^{\alpha}.
+$$
+
+As equações de pontuação, obtidas impondo $\partial \ell/\partial \alpha = 0$ e $\partial \ell/\partial \lambda = 0$, são:
+
+$$
+\frac{\partial \ell}{\partial \alpha}
+= \frac{n}{\alpha}
++ \sum_{i=1}^n \ln\bigl(1 - \lambda \ln y_i\bigr)
+- \sum_{i=1}^n \bigl(1 - \lambda \ln y_i\bigr)^{\alpha} \ln\bigl(1 - \lambda \ln y_i\bigr)
+= 0,
+$$
+
+$$
+\frac{\partial \ell}{\partial \lambda}
+= \frac{n}{\lambda}
++ (\alpha - 1)\sum_{i=1}^n \frac{\ln(y_i)}{1 - \lambda \ln y_i}
++ \alpha \sum_{i=1}^n \ln(y_i)\,\bigl(1 - \lambda \ln y_i\bigr)^{\alpha - 1}
+= 0.
+$$
+
+Os estimadores de máxima verossimilhança para $\lambda$ e $\alpha$ não admitem forma fechada e devem ser obtidos por métodos numéricos.
+
+# Referência
+
+[Shah, Ismail & Iqbal, Brikhna & Akram, Muhammad Farhan & Ali, Sajid & Dey, Sanku. (2021). UNIT NADARAJAH AND HAGHIGHI DISTRIBUTION: PROPERTIES AND APPLICATIONS IN QUALITY CONTROL. Scientia Iranica. 10.24200/SCI.2021.57302.5167.](https://scientiairanica.sharif.edu/article_22573.html)

@@ -1,5 +1,5 @@
 # UNH_distribution
-Este repositório contém um estudo completo sobre a distribuição Weibull Unitária Complementar (CUW), incluindo:
+Este repositório contém um estudo completo sobre a distribuição Nadarajah-Haghighi Unitária (UNH), incluindo:
 - Equações explícitas da PDF, CDF e função quantílica;
 - Geração de números aleatórios;
 - Estimação por máxima verossimilhança;

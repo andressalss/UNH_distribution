@@ -1,6 +1,6 @@
 # Sobre o repositório
 Este repositório contém um estudo completo sobre a distribuição Nadarajah-Haghighi Unitária (UNH), incluindo:
-- Equações explícitas da PDF, CDF e função quantílica;
+- Equações da PDF, CDF e função quantílica;
 - Geração de números aleatórios;
 - Estimação por máxima verossimilhança;
 - Implementação completa em R;

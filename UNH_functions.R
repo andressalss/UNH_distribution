@@ -1,8 +1,6 @@
-
 ################### Distribuição Nadarajah-Haghighi Unitária #################
-
 # Função de densidade de probabilidade ------------------------------------
-d_UNH <- function(y, alpha, lambda) {
+d_UNH <- function(y, alpha = 1, lambda= 1) {
   term1 <- (alpha * lambda) / y
   term2 <- (1 - lambda * log(y))^(alpha - 1)
   term3 <- exp(1 - (1 - lambda * log(y))^alpha) 
@@ -14,20 +12,24 @@ d_UNH <- function(y, alpha, lambda) {
 # integrate(d_UNH, 0, 1)
 
 # Função de distribuição acumulada ----------------------------------------
-p_UNH <- function(y, alpha, lambda) {  
-  return(1 - exp(1 - (1 - lambda * log(y))^alpha))
+p_UNH <- function(q, alpha = 1, lambda = 1) {  
+  return(exp(1 - (1 - lambda * log(q))^alpha))
 }
 
 # Exemplo de uso
-# p_UNH(2,0.4,0.4)
+# p_UNH(1,1,1)
 
 
 # Função quantílica -------------------------------------------------------
 q_UNH <- function(p, alpha, lambda) {
-  return(exp((1 - (-log(1 - p))^(1 / alpha)) / lambda))
+  
+  q <- exp((1/lambda)*((1-(1-log(p))^(1/alpha))))
+  
+  return(q)
+  
 }
-# Exemplo de uso
-# q_UNH(1,0.4,0.4)
+# u = p_UNH(0.2,2,1)
+# q_UNH(u, 2, 1)
 
 
 # Geração de números aleatórios -------------------------------------------
@@ -37,74 +39,52 @@ r_UNH <- function(n, alpha, lambda) {
 }
 
 # Exemplo de uso
+#q_UNH(0.2, 1, 1)
+
+# Exemplo de uso
 # set.seed(123)
 # amostra <- r_UNH(n = 1000, alpha = 2, lambda = 1)
 # hist(amostra, breaks = 30, main = "Amostra da distribuição UNH", xlab = "y")
 
 ## Estimação via máxima verossimilhança
 
-# Expressão da log-verossimilhança da UNH 
-loglik_UNH_exp <- expression(
-  log(alpha) + log(lambda) - log(y) +
-  (alpha - 1) * log(1 - lambda * log(y)) +
-  (1 - (1 - lambda * log(y))^alpha)
-)
-
-# Derivada em relação a alpha
-d_alpha <- D(loglik_UNH_exp, "alpha")
-
-# Derivada em relação a lambda
-d_lambda <- D(loglik_UNH_exp, "lambda")
-
-# Derivada mista: primeiro alpha, depois lambda
-d2_alpha_lambda <- D(d_alpha, "lambda")
-
-# Visualizar
-# d_alpha
-# d_lambda
-# d2_alpha_lambda
-
 # Função da log-verossimilhança da UNH 
-loglik_UNH <- function(par, x) {
+loglik_UNH <- function(par, y) {
   alpha <- par[1]
   lambda <- par[2]
-  y <- x
+  n <- length(y)
   
-  # Verificações de validade
-  if (any(is.na(y)) || any(y <= 0) || is.na(alpha) || is.na(lambda) ||
-      alpha <= 0 || lambda <= 0 || !is.finite(alpha) || !is.finite(lambda)) {
-    return(Inf)
-  }
   
-  inside_log <- 1 - lambda * log(y)
+  ll <- n*log(alpha*lambda) - sum(log(y)) + 
+    (alpha - 1) * sum(log(1 - lambda*log(y))) +
+    n - sum((1- lambda*log(y))^alpha)
   
-  if (any(is.na(inside_log)) || any(!is.finite(inside_log)) || any(inside_log <= 0)) {
-    return(Inf)
-  }
-  
-  ll <- sum(
-    log(alpha) + log(lambda) - log(y) +
-      (alpha - 1) * log(inside_log) +
-      (1 - inside_log^alpha)
-  )
   
   return(-ll)
 }
 
 # Estimação
 estim <- function(x) {
-                  result <- optim(par = c(1,1),
+  result <- optim(par = c(1,1),
                   fn = loglik_UNH,
-                  x = x,
+                  y = x,
                   method = "SANN")
   
   return(result$par)
 }
 
 # Exemplo de uso
+
+# loglik_UNH(c(0.4,3),x)
+# sum(log(d_UNH(x, 0.4,3)))
+
+# x <- r_UNH(100, 0.5,.3)
 # estim(x)
 
 
-
-
-
+# Gerar amostra simulada
+# set.seed(123)
+# n <- 1000
+# alpha_true <- 0.8
+# lambda_true <- 2.5
+# sample_data <- r_UNH(n, alpha_true, lambda_true)
